@@ -1,3 +1,9 @@
+## Nouveau modèle : transparente fumée
+
+Le menu Corps de cassette propose désormais l’originale et une variante fumée à grande fenêtre, déclinées en huit finitions. La nouvelle fenêtre est dessinée en Canvas : enroulements de bande animés, flasques transparents, guides et reflets. Le cadre texturé provient de la coque originale validée. Cover, texte manuscrit, année, vis métalliques et matériel de la platine sont conservés. Le choix est mémorisé par piste. Les anciens modèles photographiques restent exclus du menu.
+
+Validation : 27 tests, compilation et export navigateur de 3 secondes.
+
 # Version 0.9.1 — accent de l’étiquette et platine épurée
 
 La couleur d’accent pilote les trois bandes de l’étiquette, y compris les actions couleur de pochette et couleur du modèle. La texture est recalculée uniquement au changement de finition ou d’accent. Artiste et titre restent sur la cassette ; ils ne sont plus répétés sur la platine. Waveform, curseur et temps sont remontés et centrés dans la zone supérieure de la platine, au-dessus des commandes.

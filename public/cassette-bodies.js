@@ -2,6 +2,7 @@ import {validYear} from './year-utils.js';
 import {BODIES} from './cassette-models.js';
 import {tapeState,drawHub} from './tape-mechanics.js';
 import {time} from './audio-utils.js';
+import {drawSmokedInterior} from './smoked-shell.js';
 export const ORIGINAL_FINISHES={classic:{name:'Noir / ivoire',tint:null,filter:'none'},silver:{name:'Argent',tint:'#a8b3be',filter:'grayscale(1)'},sunset:{name:'Bordeaux',tint:'#772d39',filter:'none'},smoke:{name:'Bleu pétrole',tint:'#256377',filter:'saturate(.4)'},olive:{name:'Vert olive',tint:'#61774b',filter:'none'},cobalt:{name:'Bleu cobalt',tint:'#365fba',filter:'none'},plum:{name:'Prune',tint:'#8a4c83',filter:'none'},sand:{name:'Sable',tint:'#c6ac7f',filter:'none'}};
 function finishedShell(image,finish,accent='#cb7666'){
  const c=document.createElement('canvas');c.width=880;c.height=573;const g=c.getContext('2d');g.filter=finish.filter;g.drawImage(image,0,0,880,573);g.filter='none';
@@ -43,6 +44,16 @@ function drawDeckHardware(g){
 
 export function drawBody(g,images,id,cover,artist,title,p,duration,accent,theme='classic',year=''){
  const m=BODIES[id];let img=images[id];if(!m||!img)return;
+ if(id==='transparent'){
+  clearCassetteBay(g);g.save();g.translate(31,370);g.beginPath();g.roundRect(0,0,880,573,24);g.clip();
+  const finish=ORIGINAL_FINISHES[theme]||ORIGINAL_FINISHES.classic,color=/^#[\da-f]{6}$/i.test(accent)?accent:'#cb7666',key=theme+color;
+  if(images.accentShell?.key!==key)images.accentShell={key,image:finishedShell(images.original,finish,color)};
+  g.drawImage(images.accentShell.image,0,0);drawSmokedInterior(g,p,duration,finish.tint,color);drawDeckHardware(g);
+  if(cover){const d=Math.min(cover.width,cover.height);g.drawImage(cover,(cover.width-d)/2,(cover.height-d)/2,d,d,56,48,148,148)}
+  g.save();g.textAlign='center';const left=cover?232:64,right=817;fit(g,artist||'ARTISTE',(left+right)/2,105,right-left-20,32,'#243f82','"Segoe Print", "Comic Sans MS", cursive');fit(g,title||'TITRE',(left+right)/2,147,right-left-20,27,'#243f82','"Segoe Print", "Comic Sans MS", cursive');g.restore();
+  if(validYear(year)){g.save();g.translate(772,458);g.rotate(-.17);g.fillStyle='#faf5df';g.fillRect(-45,-19,90,38);g.fillStyle='#52534d';g.font='24px "Segoe Print", cursive';g.textAlign='center';g.fillText(validYear(year),0,9);g.restore()}
+  g.restore();return;
+ }
  if(id==='original'){
   const finish=ORIGINAL_FINISHES[theme]||ORIGINAL_FINISHES.classic,color=/^#[\da-f]{6}$/i.test(accent)?accent:'#cb7666',key=theme+color;
   // Rebuild only when the finish or accent changes, never on every audio frame.

@@ -1,4 +1,5 @@
 export const BODIES={
+ transparent:{asset:"original-v2",name:"SnakeBonD transparente fumée",size:[880,573],left:[220,325,64],right:[659,325,64],window:[40,200,800,250]},
  original:{asset:'original-v2',name:'SnakeBonD originale · intégrée',size:[880,573],label:[0,0,0,0],paper:'#ded0ae',ink:'#35291f',cover:[56,48,148],text:[232,105,565,32],left:[220,277,64],right:[659,277,64],window:[340,234,199,85],date:null},
  metal:{name:'Métal noir · fenêtre ovale',size:[468,307],label:[28,29,390,60],paper:'#353636',ink:'#e0c398',cover:[32,33,49],text:[90,49,315,15],left:[139,136,49],right:[324,137,30],window:[188,98,90,78],date:null},
  blue:{name:'Coque noire · papier bleu',size:[468,304],label:[43,43,368,43],paper:'#e7e5dc',ink:'#233c72',cover:[45,44,40],text:[95,60,305,15],left:[138,134,40],right:[324,134,40],window:[188,111,85,42],date:[367,173,58,36]},
