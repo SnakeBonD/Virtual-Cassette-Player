@@ -1,3 +1,7 @@
+## Modèle Années 80 — 30 octobre 2026
+
+Le modèle transparent fumé a été retiré du studio et de la galerie, ainsi que son moteur de rendu. Les pistes qui le mémorisaient reviennent à la coque originale en conservant leurs couleurs. Le nouveau modèle Années 80 conserve le gabarit intégré au lecteur : coque à stries latérales, fenêtre rectangulaire biseautée, grande étiquette ivoire à coins coupés, larges bandes colorées, repère face A et marquage S / B 80. Cover, écriture manuscrite, année, vis métalliques, quatorze finitions et animation synchronisée restent disponibles.
+
 ## Couleurs vives et relief de la coque — 30 octobre 2026
 
 Six finitions supplémentaires sur le corps complet : bleu électrique, turquoise vif, rouge corail, orange mandarine, violet pop et jaune solaire (14 au total). La recoloration conserve la luminance de la photo pour préserver le grain et le moulage ; un éclairage doux, un reflet de bord et des ombres renforcent le relief. Les vis sont restaurées en métal neutre après la coloration. Ces traitements sont calculés au changement de finition, pas à chaque image de la vidéo.

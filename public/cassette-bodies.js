@@ -2,9 +2,8 @@ import {validYear} from './year-utils.js';
 import {BODIES} from './cassette-models.js';
 import {tapeState,drawHub} from './tape-mechanics.js';
 import {time} from './audio-utils.js';
-import {drawSmokedInterior} from './smoked-shell.js';
 export const ORIGINAL_FINISHES={classic:{name:'Noir / ivoire',tint:null,filter:'none'},silver:{name:'Argent',tint:'#a8b3be',filter:'grayscale(1)'},sunset:{name:'Bordeaux',tint:'#772d39',filter:'none'},smoke:{name:'Bleu pétrole',tint:'#256377',filter:'saturate(.4)'},olive:{name:'Vert olive',tint:'#61774b',filter:'none'},cobalt:{name:'Bleu cobalt',tint:'#365fba',filter:'none'},plum:{name:'Prune',tint:'#8a4c83',filter:'none'},sand:{name:'Sable',tint:'#c6ac7f',filter:'none'},electric:{name:'Bleu électrique',tint:'#246bfa',filter:'none',vivid:true},turquoise:{name:'Turquoise vif',tint:'#09cbb5',filter:'none',vivid:true},coral:{name:'Rouge corail',tint:'#f74753',filter:'none',vivid:true},tangerine:{name:'Orange mandarine',tint:'#ff861b',filter:'none',vivid:true},violet:{name:'Violet pop',tint:'#a64cf3',filter:'none',vivid:true},lemon:{name:'Jaune solaire',tint:'#f5d234',filter:'none',vivid:true}};
-function finishedShell(image,finish,accent='#cb7666'){
+function finishedShell(image,finish,accent='#cb7666',eighties=false){
  const c=document.createElement('canvas');c.width=880;c.height=573;const g=c.getContext('2d');g.filter=finish.filter;g.drawImage(image,0,0,880,573);g.filter='none';
  // Colour only the plastic. Keep the photographed grain, shadows and moulding.
  g.save();g.beginPath();g.rect(0,0,880,573);g.roundRect(40,40,800,355,22);g.clip('evenodd');
@@ -25,11 +24,27 @@ function finishedShell(image,finish,accent='#cb7666'){
  // Chamfered label with a continuous light paper surface.
  g.save();g.beginPath();g.moveTo(62,40);g.lineTo(818,40);g.lineTo(840,62);g.lineTo(840,373);g.lineTo(818,395);g.lineTo(62,395);g.lineTo(40,373);g.lineTo(40,62);g.closePath();g.clip();
  g.drawImage(image,120,100,1250,180,40,40,800,355);g.fillStyle='#f7efd955';g.fillRect(40,40,800,355);
- g.fillStyle=accent;for(const y of [205,257,309])g.fillRect(40,y,800,15);
- g.save();g.beginPath();g.roundRect(145,201,590,151,74);g.clip();g.drawImage(image,120,350,1290,286,68.75,195.85,739.06,160.04);g.restore();
+ if(eighties){
+  // Wide stepped colour bands, printed over ivory paper, inspired by blank tapes.
+  for(const [y,h,color] of [[202,46,accent],[248,32,'#e7a547'],[280,29,'#d4693f'],[309,33,accent]]){g.fillStyle=color;g.fillRect(40,y,800,h)}
+ }else{g.fillStyle=accent;for(const y of [205,257,309])g.fillRect(40,y,800,15)}
+ g.save();g.beginPath();g.roundRect(145,201,590,151,eighties?14:74);g.clip();g.drawImage(image,120,350,1290,286,68.75,195.85,739.06,160.04);g.restore();
  g.strokeStyle='#5f5a4d66';g.lineWidth=.8;for(const y of [116,158]){g.beginPath();g.moveTo(224,y);g.lineTo(817,y);g.stroke()}
- g.fillStyle='#292d29';g.font='11px Arial';g.fillText('NORMAL POSITION  ·  TYPE I',57,385);
+ if(eighties){
+  g.fillStyle='#101412';g.fillRect(336,230,207,93);g.strokeStyle='#7d817166';g.lineWidth=2;g.strokeRect(353,238,174,76);
+  g.strokeStyle='#151816';g.lineWidth=5;g.beginPath();g.roundRect(145,201,590,151,14);g.stroke();
+  g.strokeStyle='#ddd6be80';g.lineWidth=1;g.beginPath();g.roundRect(149,205,582,143,11);g.stroke();
+  g.fillStyle='#303730';g.font='bold 23px Arial';g.fillText('S / B  80',59,377);g.font='11px Arial';g.fillText('HIGH FIDELITY  ·  STEREO',59,391);
+  g.strokeStyle='#4c5148';g.lineWidth=1;g.strokeRect(784,354,32,31);g.font='bold 24px Arial';g.fillText('A',792,379);
+ }else{g.fillStyle='#292d29';g.font='11px Arial';g.fillText('NORMAL POSITION  ·  TYPE I',57,385)}
  g.beginPath();g.moveTo(409,375);g.lineTo(438,375);g.lineTo(438,370);g.lineTo(453,380);g.lineTo(438,390);g.lineTo(438,385);g.lineTo(409,385);g.closePath();g.fill();g.restore();
+ if(eighties){
+  // Moulded grip ribs change the shell itself while keeping the deck apertures aligned.
+  for(const [x,w] of [[49,80],[751,80]])for(let y=416;y<518;y+=7){
+   g.strokeStyle='#00000085';g.lineWidth=3;g.beginPath();g.moveTo(x,y);g.lineTo(x+w,y);g.stroke();
+   g.strokeStyle='#ffffff30';g.lineWidth=1;g.beginPath();g.moveTo(x,y+2);g.lineTo(x+w,y+2);g.stroke();
+  }
+ }
  // Restore the photographed screw heads after tinting the plastic.
  // Neutral silver highlights preserve the original recesses and Phillips slots.
  g.save();g.beginPath();for(const [x,y] of [[27,25],[853,26],[27,540],[853,540],[440,466]]){g.moveTo(x+17,y);g.arc(x,y,17,0,Math.PI*2)}g.clip();g.filter='grayscale(1) brightness(2.2)';g.drawImage(image,0,0,880,573);g.restore();
@@ -58,35 +73,25 @@ function drawDeckHardware(g){
 }
 
 export function drawBody(g,images,id,cover,artist,title,p,duration,accent,theme='classic',year=''){
- const m=BODIES[id];let img=images[id];if(!m||!img)return;
- if(id==='transparent'){
-  clearCassetteBay(g);g.save();g.translate(31,370);g.beginPath();g.roundRect(0,0,880,573,24);g.clip();
-  const finish=ORIGINAL_FINISHES[theme]||ORIGINAL_FINISHES.classic,color=/^#[\da-f]{6}$/i.test(accent)?accent:'#cb7666',key=theme+color;
-  if(images.accentShell?.key!==key)images.accentShell={key,image:finishedShell(images.original,finish,color)};
-  g.drawImage(images.accentShell.image,0,0);drawSmokedInterior(g,p,duration,finish.tint,color);drawDeckHardware(g);
-  if(cover){const d=Math.min(cover.width,cover.height);g.drawImage(cover,(cover.width-d)/2,(cover.height-d)/2,d,d,56,48,148,148)}
-  g.save();g.textAlign='center';const left=cover?232:64,right=817;fit(g,artist||'ARTISTE',(left+right)/2,105,right-left-20,32,'#243f82','"Segoe Print", "Comic Sans MS", cursive');fit(g,title||'TITRE',(left+right)/2,147,right-left-20,27,'#243f82','"Segoe Print", "Comic Sans MS", cursive');g.restore();
-  if(validYear(year)){g.save();g.translate(772,458);g.rotate(-.17);g.fillStyle='#faf5df';g.fillRect(-45,-19,90,38);g.fillStyle='#52534d';g.font='24px "Segoe Print", cursive';g.textAlign='center';g.fillText(validYear(year),0,9);g.restore()}
-  g.restore();return;
- }
- if(id==='original'){
-  const finish=ORIGINAL_FINISHES[theme]||ORIGINAL_FINISHES.classic,color=/^#[\da-f]{6}$/i.test(accent)?accent:'#cb7666',key=theme+color;
+ const integrated=['original','eighties'].includes(id),m=BODIES[id];let img=images[id];if(!m||!img)return;
+ if(integrated){
+  const finish=ORIGINAL_FINISHES[theme]||ORIGINAL_FINISHES.classic,color=/^#[\da-f]{6}$/i.test(accent)?accent:'#cb7666',key=id+theme+color;
   // Rebuild only when the finish or accent changes, never on every audio frame.
-  if(images.accentShell?.key!==key)images.accentShell={key,image:finishedShell(images.original,finish,color)};
+  if(images.accentShell?.key!==key)images.accentShell={key,image:finishedShell(images.original,finish,color,id==='eighties')};
   img=images.accentShell.image;
  }
  clearCassetteBay(g);
- const [w,h]=m.size,s=id==='original'?1:Math.min(864/w,557/h);g.save();g.translate(id==='original'?31:39+(864-w*s)/2,id==='original'?370:378+(557-h*s)/2);g.scale(s,s);
- if(id==='original'){g.beginPath();g.roundRect(0,0,880,573,24);g.clip()}
+ const [w,h]=m.size,s=integrated?1:Math.min(864/w,557/h);g.save();g.translate(integrated?31:39+(864-w*s)/2,integrated?370:378+(557-h*s)/2);g.scale(s,s);
+ if(integrated){g.beginPath();g.roundRect(0,0,880,573,24);g.clip()}
  g.drawImage(img,0,0,w,h);
- if(id==='original'){drawDeckHardware(g);g.fillStyle='#292d29';g.font='19px Arial';g.fillText(duration?time(duration):'—:—',620,387)}
+ if(integrated){drawDeckHardware(g);g.fillStyle='#292d29';g.font='19px Arial';g.fillText(duration?time(duration):'—:—',620,387)}
  // Personalised writable area covers the reference artist, not the shell.
  const [lx,ly,lw,lh]=m.label;g.fillStyle=m.paper;g.fillRect(lx,ly,lw,lh);
  g.fillStyle='#ffffff0b';for(let n=0;n<500;n++)g.fillRect(lx+(n*17.23)%lw,ly+(n*31.7)%lh,.6,.6);
  if(cover){const [cx,cy,cs]=m.cover,d=Math.min(cover.width,cover.height);g.drawImage(cover,(cover.width-d)/2,(cover.height-d)/2,d,d,cx,cy,cs,cs)}
- const [tx,ty,tw,ts]=m.text;const ink=id==='original'?'#243f82':m.ink,font=id==='original'?'"Segoe Print", "Comic Sans MS", cursive':'Georgia';if(id==='original'){g.save();g.textAlign='center';const left=cover?tx:64,right=817,centre=(left+right)/2,width=right-left-20;fit(g,artist||'ARTISTE',centre,ty,width,ts,ink,font);fit(g,title||'TITRE',centre,ty+ts*1.3,width,ts*.85,ink,font);g.restore()}else{fit(g,artist||'ARTISTE',tx,ty,tw,ts,ink,font);fit(g,title||'TITRE',tx+3,ty+ts*1.3,tw-3,ts*.85,ink,font)}
- if(id==='original'&&validYear(year)){g.save();g.translate(763,403);g.rotate(-.17);g.shadowColor='#0006';g.shadowBlur=3;g.shadowOffsetY=2;g.fillStyle='#faf5df';g.beginPath();g.roundRect(-48,-22,96,43,3);g.fill();g.shadowColor='transparent';g.fillStyle='#52534d';g.font='24px "Segoe Print", cursive';g.textAlign='center';g.fillText(validYear(year),0,8);g.restore()}
- if(id!=='original'){g.fillStyle=accent;g.fillRect(tx,ly+lh-2,Math.min(tw,lw-6),1)}
+ const [tx,ty,tw,ts]=m.text;const ink=integrated?'#243f82':m.ink,font=integrated?'"Segoe Print", "Comic Sans MS", cursive':'Georgia';if(integrated){g.save();g.textAlign='center';const left=cover?tx:64,right=817,centre=(left+right)/2,width=right-left-20;fit(g,artist||'ARTISTE',centre,ty,width,ts,ink,font);fit(g,title||'TITRE',centre,ty+ts*1.3,width,ts*.85,ink,font);g.restore()}else{fit(g,artist||'ARTISTE',tx,ty,tw,ts,ink,font);fit(g,title||'TITRE',tx+3,ty+ts*1.3,tw-3,ts*.85,ink,font)}
+ if(integrated&&validYear(year)){g.save();g.translate(763,403);g.rotate(-.17);g.shadowColor='#0006';g.shadowBlur=3;g.shadowOffsetY=2;g.fillStyle='#faf5df';g.beginPath();g.roundRect(-48,-22,96,43,3);g.fill();g.shadowColor='transparent';g.fillStyle='#52534d';g.font='24px "Segoe Print", cursive';g.textAlign='center';g.fillText(validYear(year),0,8);g.restore()}
+ if(!integrated){g.fillStyle=accent;g.fillRect(tx,ly+lh-2,Math.min(tw,lw-6),1)}
  if(m.date){const [dx,dy,dw,dh]=m.date;g.fillStyle='#ddd9cc';g.fillRect(dx,dy,dw,dh);fit(g,time(duration),dx+3,dy+dh*.72,dw-6,dh*.6,'#302d27')}
  // Replace every visible old hub, so no photographic teeth remain beneath it.
  const state=tapeState(p,duration),ratio=(m.right[0]-m.left[0])/367;
