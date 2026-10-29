@@ -2,3 +2,5 @@ export function bounds(start,end,duration){if(!Number.isFinite(start)||!Number.i
 export function peaks(data,count=240){const out=[];for(let i=0;i<count;i++){let peak=0;const a=Math.floor(i*data.length/count),b=Math.floor((i+1)*data.length/count);for(let j=a;j<b;j++)peak=Math.max(peak,Math.abs(data[j]));out.push(peak)}return out}
 export function rms(data,offset,size=1024){let sum=0,n=0;for(let i=Math.max(0,offset);i<Math.min(data.length,offset+size);i++){sum+=data[i]**2;n++}return n?Math.sqrt(sum/n):0}
 export const time=s=>`${Math.floor(Math.max(0,s)/60)}:${String(Math.floor(Math.max(0,s)%60)).padStart(2,'0')}`;
+
+export function montageTime(start,end,duration,position){const range=bounds(start,end,duration);const length=range.end-range.start,elapsed=Math.max(0,Math.min(length,position-range.start));return {...range,duration:length,elapsed,fraction:elapsed/length}}
