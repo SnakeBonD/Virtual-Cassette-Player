@@ -11,7 +11,7 @@ function finishedShell(image,finish,accent='#cb7666'){
  g.drawImage(image,120,100,1250,180,40,40,800,355);g.fillStyle='#f7efd955';g.fillRect(40,40,800,355);
  g.fillStyle=accent;for(const y of [205,257,309])g.fillRect(40,y,800,15);
  g.save();g.beginPath();g.roundRect(145,201,590,151,74);g.clip();g.drawImage(image,120,350,1290,286,68.75,195.85,739.06,160.04);g.restore();
- g.strokeStyle='#5f5a4d66';g.lineWidth=.8;for(const y of [103,145]){g.beginPath();g.moveTo(176,y);g.lineTo(817,y);g.stroke()}
+ g.strokeStyle='#5f5a4d66';g.lineWidth=.8;for(const y of [116,158]){g.beginPath();g.moveTo(224,y);g.lineTo(817,y);g.stroke()}
  g.fillStyle='#292d29';g.font='11px Arial';g.fillText('NORMAL POSITION  ·  TYPE I',57,385);
  g.beginPath();g.moveTo(409,375);g.lineTo(438,375);g.lineTo(438,370);g.lineTo(453,380);g.lineTo(438,390);g.lineTo(438,385);g.lineTo(409,385);g.closePath();g.fill();g.restore();
  // Restore the photographed screw heads after tinting the plastic.
@@ -58,7 +58,7 @@ export function drawBody(g,images,id,cover,artist,title,p,duration,accent,theme=
  const [lx,ly,lw,lh]=m.label;g.fillStyle=m.paper;g.fillRect(lx,ly,lw,lh);
  g.fillStyle='#ffffff0b';for(let n=0;n<500;n++)g.fillRect(lx+(n*17.23)%lw,ly+(n*31.7)%lh,.6,.6);
  if(cover){const [cx,cy,cs]=m.cover,d=Math.min(cover.width,cover.height);g.drawImage(cover,(cover.width-d)/2,(cover.height-d)/2,d,d,cx,cy,cs,cs)}
- const [tx,ty,tw,ts]=m.text;const ink=id==='original'?'#243f82':m.ink,font=id==='original'?'"Segoe Print", "Comic Sans MS", cursive':'Georgia';fit(g,artist||'ARTISTE',tx,ty,tw,ts,ink,font);fit(g,title||'TITRE',tx+3,ty+ts*1.3,tw-3,ts*.85,ink,font);
+ const [tx,ty,tw,ts]=m.text;const ink=id==='original'?'#243f82':m.ink,font=id==='original'?'"Segoe Print", "Comic Sans MS", cursive':'Georgia';if(id==='original'){g.save();g.textAlign='center';const left=cover?tx:64,right=817,centre=(left+right)/2,width=right-left-20;fit(g,artist||'ARTISTE',centre,ty,width,ts,ink,font);fit(g,title||'TITRE',centre,ty+ts*1.3,width,ts*.85,ink,font);g.restore()}else{fit(g,artist||'ARTISTE',tx,ty,tw,ts,ink,font);fit(g,title||'TITRE',tx+3,ty+ts*1.3,tw-3,ts*.85,ink,font)}
  if(id==='original'&&validYear(year)){g.save();g.translate(763,403);g.rotate(-.17);g.shadowColor='#0006';g.shadowBlur=3;g.shadowOffsetY=2;g.fillStyle='#faf5df';g.beginPath();g.roundRect(-48,-22,96,43,3);g.fill();g.shadowColor='transparent';g.fillStyle='#52534d';g.font='24px "Segoe Print", cursive';g.textAlign='center';g.fillText(validYear(year),0,8);g.restore()}
  if(id!=='original'){g.fillStyle=accent;g.fillRect(tx,ly+lh-2,Math.min(tw,lw-6),1)}
  if(m.date){const [dx,dy,dw,dh]=m.date;g.fillStyle='#ddd9cc';g.fillRect(dx,dy,dw,dh);fit(g,time(duration),dx+3,dy+dh*.72,dw-6,dh*.6,'#302d27')}

@@ -1,5 +1,5 @@
 export const BODIES={
- original:{asset:'original-v2',name:'SnakeBonD originale · intégrée',size:[880,573],label:[0,0,0,0],paper:'#ded0ae',ink:'#35291f',cover:[64,54,90],text:[182,92,600,32],left:[220,277,64],right:[659,277,64],window:[340,234,199,85],date:null},
+ original:{asset:'original-v2',name:'SnakeBonD originale · intégrée',size:[880,573],label:[0,0,0,0],paper:'#ded0ae',ink:'#35291f',cover:[56,48,148],text:[232,105,565,32],left:[220,277,64],right:[659,277,64],window:[340,234,199,85],date:null},
  metal:{name:'Métal noir · fenêtre ovale',size:[468,307],label:[28,29,390,60],paper:'#353636',ink:'#e0c398',cover:[32,33,49],text:[90,49,315,15],left:[139,136,49],right:[324,137,30],window:[188,98,90,78],date:null},
  blue:{name:'Coque noire · papier bleu',size:[468,304],label:[43,43,368,43],paper:'#e7e5dc',ink:'#233c72',cover:[45,44,40],text:[95,60,305,15],left:[138,134,40],right:[324,134,40],window:[188,111,85,42],date:[367,173,58,36]},
  vintage:{name:'Vintage graphite · index ivoire',size:[463,303],label:[85,40,327,43],paper:'#e8e7e2',ink:'#2b4278',cover:[43,43,38],text:[96,58,303,15],left:[138,131,39],right:[324,131,39],window:[187,109,85,41],date:[76,169,64,30]},
