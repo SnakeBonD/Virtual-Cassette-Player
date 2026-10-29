@@ -3,10 +3,25 @@ import {BODIES} from './cassette-models.js';
 import {tapeState,drawHub} from './tape-mechanics.js';
 import {time} from './audio-utils.js';
 import {drawSmokedInterior} from './smoked-shell.js';
-export const ORIGINAL_FINISHES={classic:{name:'Noir / ivoire',tint:null,filter:'none'},silver:{name:'Argent',tint:'#a8b3be',filter:'grayscale(1)'},sunset:{name:'Bordeaux',tint:'#772d39',filter:'none'},smoke:{name:'Bleu pétrole',tint:'#256377',filter:'saturate(.4)'},olive:{name:'Vert olive',tint:'#61774b',filter:'none'},cobalt:{name:'Bleu cobalt',tint:'#365fba',filter:'none'},plum:{name:'Prune',tint:'#8a4c83',filter:'none'},sand:{name:'Sable',tint:'#c6ac7f',filter:'none'}};
+export const ORIGINAL_FINISHES={classic:{name:'Noir / ivoire',tint:null,filter:'none'},silver:{name:'Argent',tint:'#a8b3be',filter:'grayscale(1)'},sunset:{name:'Bordeaux',tint:'#772d39',filter:'none'},smoke:{name:'Bleu pétrole',tint:'#256377',filter:'saturate(.4)'},olive:{name:'Vert olive',tint:'#61774b',filter:'none'},cobalt:{name:'Bleu cobalt',tint:'#365fba',filter:'none'},plum:{name:'Prune',tint:'#8a4c83',filter:'none'},sand:{name:'Sable',tint:'#c6ac7f',filter:'none'},electric:{name:'Bleu électrique',tint:'#246bfa',filter:'none',vivid:true},turquoise:{name:'Turquoise vif',tint:'#09cbb5',filter:'none',vivid:true},coral:{name:'Rouge corail',tint:'#f74753',filter:'none',vivid:true},tangerine:{name:'Orange mandarine',tint:'#ff861b',filter:'none',vivid:true},violet:{name:'Violet pop',tint:'#a64cf3',filter:'none',vivid:true},lemon:{name:'Jaune solaire',tint:'#f5d234',filter:'none',vivid:true}};
 function finishedShell(image,finish,accent='#cb7666'){
  const c=document.createElement('canvas');c.width=880;c.height=573;const g=c.getContext('2d');g.filter=finish.filter;g.drawImage(image,0,0,880,573);g.filter='none';
- if(finish.tint){g.save();g.beginPath();g.rect(0,0,880,573);g.roundRect(40,40,800,322,25);g.clip('evenodd');g.globalCompositeOperation='screen';g.globalAlpha=finish===ORIGINAL_FINISHES.silver?.55:.36;g.fillStyle=finish.tint;g.fillRect(0,0,880,573);g.restore()}
+ // Colour only the plastic. Keep the photographed grain, shadows and moulding.
+ g.save();g.beginPath();g.rect(0,0,880,573);g.roundRect(40,40,800,355,22);g.clip('evenodd');
+ if(finish.vivid){
+  const painted=document.createElement('canvas');painted.width=880;painted.height=573;const pg=painted.getContext('2d');pg.drawImage(image,0,0,880,573);
+  const pixels=pg.getImageData(0,0,880,573),rgb=finish.tint.match(/[a-f\d]{2}/gi).map(v=>parseInt(v,16));
+  for(let i=0;i<pixels.data.length;i+=4){const d=pixels.data,l=(.2126*d[i]+.7152*d[i+1]+.0722*d[i+2])/255;
+   const shade=Math.min(1,l*3.2),specular=Math.max(0,l-.45)*.8;
+   for(let k=0;k<3;k++)d[i+k]=Math.min(255,rgb[k]*shade+(255-rgb[k])*specular);
+  }pg.putImageData(pixels,0,0);g.drawImage(painted,0,0);
+ }else if(finish.tint){g.globalCompositeOperation='screen';g.globalAlpha=finish===ORIGINAL_FINISHES.silver?.55:.36;g.fillStyle=finish.tint;g.fillRect(0,0,880,573);g.globalCompositeOperation='source-over';g.globalAlpha=1}
+ // Broad softbox reflection and lower-edge falloff follow the shell surface.
+ const sheen=g.createLinearGradient(80,0,620,573);sheen.addColorStop(0,'#ffffff24');sheen.addColorStop(.28,'#ffffff08');sheen.addColorStop(.55,'#ffffff00');sheen.addColorStop(1,'#00000050');g.fillStyle=sheen;g.fillRect(0,0,880,573);
+ const edge=g.createLinearGradient(0,0,0,573);edge.addColorStop(0,'#ffffff70');edge.addColorStop(.12,'#ffffff12');edge.addColorStop(.7,'#00000022');edge.addColorStop(1,'#000000b0');g.strokeStyle=edge;g.lineWidth=3;g.beginPath();g.roundRect(7,7,866,559,20);g.stroke();
+ // The lower moulded panel catches light on its top bevel and loses it below.
+ g.strokeStyle='#ffffff30';g.lineWidth=2;g.beginPath();g.moveTo(153,561);g.lineTo(190,437);g.quadraticCurveTo(193,431,200,431);g.lineTo(681,431);g.quadraticCurveTo(688,431,690,438);g.stroke();
+ g.restore();
  // Chamfered label with a continuous light paper surface.
  g.save();g.beginPath();g.moveTo(62,40);g.lineTo(818,40);g.lineTo(840,62);g.lineTo(840,373);g.lineTo(818,395);g.lineTo(62,395);g.lineTo(40,373);g.lineTo(40,62);g.closePath();g.clip();
  g.drawImage(image,120,100,1250,180,40,40,800,355);g.fillStyle='#f7efd955';g.fillRect(40,40,800,355);

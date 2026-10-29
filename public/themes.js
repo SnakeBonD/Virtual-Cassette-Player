@@ -7,7 +7,13 @@ export const THEMES={
  olive:{name:'Vert olive',paper:'#e1dcc9',ink:'#272a20',accent:'#63734b',shell:'#3b4930',font:'Arial',stripes:1},
  cobalt:{name:'Bleu cobalt',paper:'#e3e4df',ink:'#253049',accent:'#426bb0',shell:'#284d91',font:'Arial',stripes:1},
  plum:{name:'Prune',paper:'#e5dcdf',ink:'#382637',accent:'#825779',shell:'#65365e',font:'Arial',stripes:1},
- sand:{name:'Sable',paper:'#ebe4d3',ink:'#3b3021',accent:'#9a8156',shell:'#a28c64',font:'Arial',stripes:1}
+ sand:{name:'Sable',paper:'#ebe4d3',ink:'#3b3021',accent:'#9a8156',shell:'#a28c64',font:'Arial',stripes:1},
+ electric:{name:'Bleu électrique',paper:'#f5eedc',ink:'#243f82',accent:'#246bfa',shell:'#246bfa',font:'Arial',stripes:3},
+ turquoise:{name:'Turquoise vif',paper:'#f5eedc',ink:'#243f82',accent:'#168c82',shell:'#09cbb5',font:'Arial',stripes:3},
+ coral:{name:'Rouge corail',paper:'#f5eedc',ink:'#243f82',accent:'#c43b49',shell:'#f74753',font:'Arial',stripes:3},
+ tangerine:{name:'Orange mandarine',paper:'#f5eedc',ink:'#243f82',accent:'#dd6e1c',shell:'#ff861b',font:'Arial',stripes:3},
+ violet:{name:'Violet pop',paper:'#f5eedc',ink:'#243f82',accent:'#8544bc',shell:'#a64cf3',font:'Arial',stripes:3},
+ lemon:{name:'Jaune solaire',paper:'#f5eedc',ink:'#243f82',accent:'#b99728',shell:'#f5d234',font:'Arial',stripes:3}
 };
 export function appearance(value={}){const theme=Object.hasOwn(THEMES,value?.theme)?value.theme:'classic';return {...(Object.hasOwn(BODIES,value?.body)||value?.body==='studio'?{body:value.body}:{}),theme,accent:/^#[\da-f]{6}$/i.test(value?.accent)?value.accent:THEMES[theme].accent}}
 export function readAppearance(storage,key){try{return appearance(JSON.parse(storage.getItem('snakebond:appearance:'+key)||'{}'))}catch{return appearance()}}

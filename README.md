@@ -1,3 +1,7 @@
+## Couleurs vives et relief de la coque — 30 octobre 2026
+
+Six finitions supplémentaires sur le corps complet : bleu électrique, turquoise vif, rouge corail, orange mandarine, violet pop et jaune solaire (14 au total). La recoloration conserve la luminance de la photo pour préserver le grain et le moulage ; un éclairage doux, un reflet de bord et des ombres renforcent le relief. Les vis sont restaurées en métal neutre après la coloration. Ces traitements sont calculés au changement de finition, pas à chaque image de la vidéo.
+
 ## Nouveau modèle : transparente fumée
 
 Le menu Corps de cassette propose désormais l’originale et une variante fumée à grande fenêtre, déclinées en huit finitions. La nouvelle fenêtre est dessinée en Canvas : enroulements de bande animés, flasques transparents, guides et reflets. Le cadre texturé provient de la coque originale validée. Cover, texte manuscrit, année, vis métalliques et matériel de la platine sont conservés. Le choix est mémorisé par piste. Les anciens modèles photographiques restent exclus du menu.
