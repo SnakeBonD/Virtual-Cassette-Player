@@ -1,1 +1,175 @@
-<!doctype html><html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SnakeBonD — Cassette Studio</title><link rel="icon" href="/favicon.ico?v=1" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=1"><link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png?v=1"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><meta name="theme-color" content="#101112"><link rel="stylesheet" href="style.css"><body><header><a class="brand" href="/" aria-label="SnakeBonD Cassette Studio — accueil"><img src="assets/brand/snakebond-logo.png" width="96" height="96" alt="Logo SnakeBonD : serpent et cassette rétro"><span class="brand-name">SnakeBonD<small>CASSETTE STUDIO</small></span></a><span class="badge">LOCAL • V0.9.1</span></header><main><section class="editor"><p class="eyebrow">DU SON À L’IMAGE</p><h1>Votre musique.<br>Sur bande.</h1><p class="intro">Un lecteur intemporel. Une cassette pour chaque histoire.</p><fieldset id="fields"><legend>01 / La piste</legend><button id="example">Charger LIORA AIOVA</button><label class="upload">Importer un audio<input id="audioFile" type="file" accept="audio/*"></label><div class="pair"><label>Artiste<input id="artist" maxlength="70" value="LIORA AIOVA"></label><label>Titre<input id="title" maxlength="90" value="Liora"></label></div><label>Année de la chanson<input id="year" type="text" inputmode="numeric" maxlength="4" placeholder="Année inconnue"></label><button id="findYear">Rechercher l’année en ligne</button><p id="yearNote" class="hint">Tag YEAR prioritaire ; sinon recherche par artiste et titre sur MusicBrainz. Aucun audio envoyé.</p><a id="yearSource" target="_blank" rel="noopener" hidden>Source de l’année</a><label>Cover carrée · recadrage centré<input id="coverFile" type="file" accept="image/png,image/jpeg,image/webp"></label><label>Corps de cassette<select id="body"></select></label><button id="anotherBody">Changer de finition</button><a href="cassettes.html" target="_blank" rel="noopener" style="color:#ddb775">Voir les finitions</a><p class="hint">Deux modèles : originale et Années 80, chacun en quatorze finitions mémorisées pour chaque piste.</p><label>Finition de la cassette<select id="theme"><option value="classic">Crème / bordeaux</option><option value="silver">Noir / argent</option><option value="sunset">Ivoire / orange</option><option value="smoke">Transparent fumé</option></select></label><label>Couleur d’accent<input type="color" id="accent" value="#602b3e"></label><button id="fromCover">Prendre une couleur de la pochette</button><button id="defaultAccent">Couleur du modèle</button><p class="hint">La couleur d’accent modifie les bandes de l’étiquette. Vos couleurs sont mémorisées pour ce fichier audio.</p><label>Image de cassette complète · facultative<input id="cassetteFile" type="file" accept="image/png,image/jpeg,image/webp"></label><button id="resetCassette">Revenir à la cassette du modèle</button><legend>02 / Le montage</legend><div class="pair"><label>Début (secondes)<input id="start" type="number" min="0" step="0.1" value="0"></label><label>Fin (secondes)<input id="end" type="number" min="0" step="any" value="15"></label></div><button id="fullTrack" type="button" disabled>Chanson entière</button><p class="hint" id="duration">Chargez une piste pour commencer.</p><label>Volume d’écoute<input id="volume" type="range" min="0" max="1" step="0.01" value="0.7"></label><button id="play" disabled>▶ Écouter</button><input id="seek" aria-label="Position de lecture" type="range" min="0" max="1" step="0.01" value="0" disabled><legend>03 / La vidéo</legend><label>Cadrage 9:16<select id="framing"><option value="full" selected>Plein cadre · sans marges</option><option value="safe">Avec marges de sécurité</option></select></label><p class="hint">1080 × 1920 · 30 images/s · audio inclus<br>Export en temps réel. Gardez cet onglet visible.</p><button id="export" class="primary" disabled>Créer la vidéo</button><button id="still">Enregistrer une image PNG</button></fieldset><button id="cancel" hidden>Annuler l’export</button><p id="status" role="status">Studio prêt. Fichiers traités sur cet appareil.</p><a id="download" hidden>Télécharger la vidéo</a><details><summary>Jukebox de cette session</summary><p class="hint">Ajoutez plusieurs audios ; sélectionnez une piste pour la charger. La liste disparaît au rechargement.</p><div id="library"></div></details></section><section class="preview"><div class="preview-heading"><span>MASTER / 9:16</span><span class="live">● APERÇU</span></div><canvas id="canvas" width="1080" height="1920" aria-label="Aperçu du lecteur cassette"></canvas><p id="frameNote">Habillage fixe · plein cadre 9:16, sans marges</p></section></main><script type="module" src="app.js"></script></body></html>
+<!doctype html>
+<html lang="fr">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SnakeBonD — Cassette Studio</title>
+<link rel="icon" href="/favicon.ico?v=1" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=1">
+<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png?v=1">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#101112">
+<link rel="stylesheet" href="style.css">
+<body>
+<header>
+<a class="brand" href="/" aria-label="SnakeBonD Cassette Studio — accueil">
+<img src="assets/brand/snakebond-logo.png" width="96" height="96" alt="Logo SnakeBonD : serpent et cassette rétro">
+<span class="brand-name">SnakeBonD<small>CASSETTE STUDIO</small>
+</span>
+</a>
+<span class="badge">STUDIO • V1.0</span>
+</header>
+<main>
+<section class="editor">
+<p class="eyebrow">DU SON À L’IMAGE</p>
+<h1>Votre musique.<br>Sur bande.</h1>
+<p class="intro">Un lecteur intemporel. Une cassette pour chaque histoire.</p>
+<section class="project-panel" aria-label="Projets locaux">
+<h2>Mes projets</h2>
+<label>Nom du projet<input id="projectName" maxlength="80" value="Mon montage">
+</label>
+<label class="check">
+<input id="keepAudio" type="checkbox" checked>Conserver les fichiers audio sur cet appareil</label>
+<p class="hint">Sauvegarde automatique dans ce navigateur. Si cette option est décochée, il faudra resélectionner les fichiers audio à la réouverture. Effacer les données du navigateur efface aussi les projets.</p>
+<div class="actions">
+<button id="saveProject">Enregistrer un projet</button>
+<button id="newProject">Nouveau projet</button>
+</div>
+<label>Projets enregistrés<select id="projectList">
+<option value="">Choisir un projet…</option>
+</select>
+</label>
+<button id="openProject">Ouvrir le projet</button>
+<button id="deleteProject">Supprimer le projet</button>
+<p id="saveState" class="hint" role="status">Chargement des sauvegardes…</p>
+</section>
+<fieldset id="fields">
+<legend>01 / La piste</legend>
+<button id="example">Charger LIORA AIOVA</button>
+<label class="upload">Importer des audios<input id="audioFile" type="file" accept="audio/*" multiple>
+</label>
+<div class="pair">
+<label>Artiste<input id="artist" maxlength="70" value="LIORA AIOVA">
+</label>
+<label>Titre<input id="title" maxlength="90" value="Liora">
+</label>
+</div>
+<label>Année de la chanson<input id="year" type="text" inputmode="numeric" maxlength="4" placeholder="Année inconnue">
+</label>
+<button id="findYear">Rechercher l’année en ligne</button>
+<p id="yearNote" class="hint">Tag YEAR prioritaire ; sinon recherche par artiste et titre sur MusicBrainz. Aucun audio envoyé.</p>
+<a id="yearSource" target="_blank" rel="noopener" hidden>Source de l’année</a>
+<label>Cover carrée · recadrage centré<input id="coverFile" type="file" accept="image/png,image/jpeg,image/webp">
+</label>
+<label>Corps de cassette<select id="body">
+</select>
+</label>
+<button id="anotherBody">Changer de finition</button>
+<a href="cassettes.html" target="_blank" rel="noopener" style="color:#ddb775">Voir les finitions</a>
+<p class="hint">Deux modèles : originale et Années 80, chacun en quatorze finitions mémorisées pour chaque piste.</p>
+<label>Finition de la cassette<select id="theme">
+<option value="classic">Crème / bordeaux</option>
+<option value="silver">Noir / argent</option>
+<option value="sunset">Ivoire / orange</option>
+<option value="smoke">Transparent fumé</option>
+</select>
+</label>
+<label>Couleur d’accent<input type="color" id="accent" value="#602b3e">
+</label>
+<button id="fromCover">Prendre une couleur de la pochette</button>
+<button id="defaultAccent">Couleur du modèle</button>
+<p class="hint">La couleur d’accent modifie les bandes de l’étiquette. Vos couleurs sont mémorisées pour ce fichier audio.</p>
+<label>Image de cassette complète · facultative<input id="cassetteFile" type="file" accept="image/png,image/jpeg,image/webp">
+</label>
+<button id="resetCassette">Revenir à la cassette du modèle</button>
+<legend>02 / Le montage</legend>
+<div class="pair">
+<label>Début (min:sec)<input id="start" type="text" inputmode="decimal" placeholder="0:00" value="0:00" aria-describedby="timeHelp">
+</label>
+<label>Fin (min:sec)<input id="end" type="text" inputmode="decimal" placeholder="1:00" value="0:15" aria-describedby="timeHelp">
+</label>
+</div>
+<p class="hint" id="timeHelp">Ex. 1:30 ou 90 secondes. Les durées rapides commencent au point de début choisi.</p>
+<div class="presets">
+<button type="button" data-preset="15" disabled>15 s</button>
+<button type="button" data-preset="30" disabled>30 s</button>
+<button type="button" data-preset="60" disabled>60 s</button>
+</div>
+<button id="fullTrack" type="button" disabled>Chanson entière</button>
+<p class="hint" id="duration">Chargez une piste pour commencer.</p>
+<p id="clipDuration" class="clip-duration" role="status">Durée du montage : —</p>
+<div class="pair">
+<label>Fondu d’entrée (s)<input id="fadeIn" type="number" min="0" max="30" step="0.1" value="0">
+</label>
+<label>Fondu de sortie (s)<input id="fadeOut" type="number" min="0" max="30" step="0.1" value="0">
+</label>
+</div>
+<p class="hint">0 = désactivé. Les fondus s’entendent à l’écoute et dans la vidéo. Sur un extrait court, leur durée est réduite proportionnellement.</p>
+<label>Volume d’écoute<input id="volume" type="range" min="0" max="1" step="0.01" value="0.7">
+</label>
+<button id="play" disabled>▶ Écouter</button>
+<input id="seek" aria-label="Position de lecture" type="range" min="0" max="1" step="0.01" value="0" disabled>
+<legend>03 / La vidéo</legend>
+<label>Cadrage 9:16<select id="framing">
+<option value="full" selected>Plein cadre · sans marges</option>
+<option value="safe">Avec marges de sécurité</option>
+</select>
+</label>
+<label>Qualité vidéo<select id="quality">
+<option value="standard">Standard · 720 × 1280</option>
+<option value="high" selected>Haute · 1080 × 1920</option>
+</select>
+</label>
+<p class="hint" id="qualityNote">1080 × 1920 · 30 images/s · audio inclus</p>
+<p class="hint">Export en temps réel. Gardez cet onglet visible. Le volume d’écoute ne modifie pas celui de la vidéo.</p>
+<button id="export" class="primary" disabled>Créer la vidéo</button>
+<button id="still">Enregistrer une image PNG</button>
+</fieldset>
+<button id="cancel" hidden>Annuler l’export</button>
+<p id="status" role="status">Studio prêt. Fichiers traités sur cet appareil.</p>
+<section id="videoResult" hidden>
+<h2>Votre vidéo</h2>
+<video id="videoPreview" controls playsinline preload="metadata" aria-label="Aperçu de la vidéo exportée">
+</video>
+<p id="videoInfo" class="hint">
+</p>
+<a id="download" hidden>Télécharger la vidéo</a>
+</section>
+<section class="jukebox" aria-label="Jukebox">
+<h2>Jukebox</h2>
+<p class="hint">Importez plusieurs morceaux. Chacun conserve sa cassette et ses réglages. La playlist fait partie du projet.</p>
+<label>Lecture du jukebox<select id="jukeboxScope">
+<option value="full">Chansons entières</option>
+<option value="clips">Montages sélectionnés</option>
+</select>
+</label>
+<div class="actions">
+<button id="previousTrack">⏮ Précédent</button>
+<button id="jukeboxPlay">▶ Lire la playlist</button>
+<button id="nextTrack">Suivant ⏭</button>
+<button id="jukeboxStop">■ Arrêter</button>
+</div>
+<label class="check">
+<input id="shuffle" type="checkbox">Lecture aléatoire</label>
+<label class="check">
+<input id="repeat" type="checkbox">Répéter la playlist</label>
+<p id="jukeboxStatus" class="hint" role="status">Playlist vide.</p>
+<div id="library">
+</div>
+<label id="relinkLabel" class="upload" hidden>Resélectionner le fichier audio de cette piste<input id="relinkFile" type="file" accept="audio/*">
+</label>
+</section>
+</section>
+<section class="preview">
+<div class="preview-heading">
+<span>MASTER / 9:16</span>
+<span class="live">● APERÇU</span>
+</div>
+<canvas id="canvas" width="1080" height="1920" aria-label="Aperçu du lecteur cassette">
+</canvas>
+<p id="frameNote">Habillage fixe · plein cadre 9:16, sans marges</p>
+</section>
+</main>
+<script type="module" src="app.js">
+</script>
+</body>
+</html>

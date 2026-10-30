@@ -1,3 +1,16 @@
+# Studio V1 — montage, export, projets et jukebox
+
+- **Montage** : saisie `minutes:secondes` ou secondes, raccourcis 15/30/60 s depuis le début choisi, chanson entière, durée du montage affichée. Le lecteur et sa waveform suivent l’extrait.
+- **Audio / vidéo** : fondus d’entrée et de sortie réglables (0 à 30 s). Ils sont réduits proportionnellement quand ils se chevauchent sur un extrait court. Écoute et export partagent la même courbe ; une reprise en cours de fondu reprend le bon niveau. Standard = 720 × 1280 / 4 Mbit/s, haute = 1080 × 1920 / 8 Mbit/s, 30 images/s. Le résultat est lisible dans un lecteur vidéo avant téléchargement. Le volume d’écoute ne modifie pas le fichier exporté.
+- **Projets locaux** : brouillon automatique et projets nommés en IndexedDB, incluant playlist, textes, année, cover, cassette personnalisée, finitions, montage, fondus et qualité. L’audio peut être conservé dans ce navigateur ou omis. Dans ce dernier cas, chaque piste manquante indique son nom et demande le même fichier (empreinte SHA-256). « Nouveau projet » conserve le montage précédent dans la liste. Effacer les données du navigateur efface ces sauvegardes ; pas de synchronisation entre appareils.
+- **Jukebox** : import multiple, liste ordonnée, déplacement et retrait de pistes, précédent/suivant, pause/reprise, enchaînement, lecture aléatoire sans répétition avant fin du cycle et répétition optionnelle. Lecture des chansons entières ou des montages enregistrés pour chaque piste. Chaque piste retrouve son apparence. Un bref temps de décodage peut séparer deux titres.
+
+Les audios et les images restent sur l’appareil. Seule la recherche d’année existante envoie artiste et titre à MusicBrainz. L’export reste en temps réel, onglet visible, MP4 si l’encodeur du navigateur le permet, sinon WebM. La durée mesurée du fichier peut varier d’environ quelques images selon l’encodeur.
+
+Voir [VERIFICATION-V1.md](VERIFICATION-V1.md) pour les contrôles effectués.
+
+---
+
 ## Modèle Années 80 — 30 octobre 2026
 
 Le modèle transparent fumé a été retiré du studio et de la galerie, ainsi que son moteur de rendu. Les pistes qui le mémorisaient reviennent à la coque originale en conservant leurs couleurs. Le nouveau modèle Années 80 conserve le gabarit intégré au lecteur : coque à stries latérales, fenêtre rectangulaire biseautée, grande étiquette ivoire à coins coupés, larges bandes colorées, repère face A et marquage S / B 80. Cover, écriture manuscrite, année, vis métalliques, quatorze finitions et animation synchronisée restent disponibles.
