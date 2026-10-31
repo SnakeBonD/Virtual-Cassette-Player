@@ -8,13 +8,13 @@ export function coverCandidates(data, artist, title, album = '') {
   return [...new Map(releases.sort((a,b) => (a.date || '9999').localeCompare(b.date || '9999')).map(r => [r.id,r])).values()].slice(0, 2);
 }
 let queue = Promise.resolve(), lastRequest = 0;
-export function musicBrainzRecordings(artist, title) {
+export function musicBrainzRecordings(artist, title, album = '') {
   const run = queue.then(async () => {
     const wait = Math.max(0, 1100 - (Date.now() - lastRequest));
     if (wait) await new Promise(resolve => setTimeout(resolve, wait));
     lastRequest = Date.now();
     const quote = s => '"' + s.replace(/[\\"]/g, ' ').trim() + '"';
-    const query = new URLSearchParams({query: 'recording:' + quote(title) + ' AND artist:' + quote(artist), fmt:'json', limit:'25'});
+    const query = new URLSearchParams({query: 'recording:' + quote(title) + ' AND artist:' + quote(artist) + (album ? ' AND release:' + quote(album) : ''), fmt:'json', limit:'25'});
     const response = await fetch('https://musicbrainz.org/ws/2/recording/?' + query, {headers:{'User-Agent':'SnakeBonDStudio/1.0 (https://cassette.snakebond.net)',Accept:'application/json'}, signal:AbortSignal.timeout(9000)});
     if (!response.ok) throw Error('MusicBrainz indisponible');
     return response.json();
@@ -23,7 +23,7 @@ export function musicBrainzRecordings(artist, title) {
   return run;
 }
 export async function lookupCover(artist, title, album = '', request = fetch, search = musicBrainzRecordings) {
-  const candidates = coverCandidates(await search(artist,title), artist,title,album);
+  const candidates = coverCandidates(await search(artist,title,album), artist,title,album);
   const attempts=candidates.map(release=>({release,kind:'release',id:release.id}));
   const groups=new Set();
   for(const release of candidates){const id=release['release-group']?.id;if(mbid.test(id||'')&&!groups.has(id)){groups.add(id);attempts.push({release,kind:'release-group',id});}}
