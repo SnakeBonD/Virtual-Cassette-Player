@@ -96,7 +96,7 @@ async function findMissingCovers(all){
    // Do not change the artwork during an export, or overwrite a newer manual choice.
    while(exporting)await new Promise(resolve=>setTimeout(resolve,250));
    if(!library.includes(entry)||entry.coverBlob||artist!==entry.artist||title!==entry.title||album!==(entry.album||''))continue;
-   entry.coverBlob=blob;entry.cover=img;entry.coverUrl=/^https:\/\/musicbrainz\.org\/release\/[a-f0-9-]{36}$/.test(result.url||'')?result.url:'';entry.coverMessage='Pochette trouvée : '+result.album+' (MusicBrainz / Cover Art Archive).';found++;
+   entry.coverBlob=blob;entry.cover=img;entry.coverUrl=/^https:\/\/musicbrainz\.org\/release(?:-group)?\/[a-f0-9-]{36}$/.test(result.url||'')?result.url:'';entry.coverMessage='Pochette trouvée : '+result.album+' (MusicBrainz / Cover Art Archive).';found++;
    if(library[active]===entry)cover=img;
   }catch(error){if(library.includes(entry)&&!entry.coverBlob){entry.coverMessage=error.message;failed++}}
   if(library[active]===entry)showCover(entry);markDirty();

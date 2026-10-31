@@ -24,8 +24,11 @@ export function musicBrainzRecordings(artist, title) {
 }
 export async function lookupCover(artist, title, album = '', request = fetch, search = musicBrainzRecordings) {
   const candidates = coverCandidates(await search(artist,title), artist,title,album);
-  for (const release of candidates) {
-    const response = await request(`https://coverartarchive.org/release/${release.id}/front-500`, {signal:AbortSignal.timeout(10000)});
+  const attempts=candidates.map(release=>({release,kind:'release',id:release.id}));
+  const groups=new Set();
+  for(const release of candidates){const id=release['release-group']?.id;if(mbid.test(id||'')&&!groups.has(id)){groups.add(id);attempts.push({release,kind:'release-group',id});}}
+  for (const {release,kind,id} of attempts.slice(0,3)) {
+    const response = await request(`https://coverartarchive.org/${kind}/${id}/front-500`, {signal:AbortSignal.timeout(10000)});
     if (response.status === 404) continue;
     if (!response.ok) throw Error('Pochettes indisponibles');
     const type = (response.headers.get('content-type') || '').split(';')[0];
@@ -33,7 +36,7 @@ export async function lookupCover(artist, title, album = '', request = fetch, se
     const reader = response.body.getReader(), chunks = []; let size = 0;
     while (true) { const {done,value} = await reader.read(); if (done) break; size += value.length; if (size > 3_000_000) { await reader.cancel(); throw Error('Image trop volumineuse'); } chunks.push(value); }
     if (!size) throw Error('Image vide');
-    return {image:Buffer.concat(chunks).toString('base64'), type, album:release.title, source:'MusicBrainz / Cover Art Archive', url:'https://musicbrainz.org/release/' + release.id};
+    return {image:Buffer.concat(chunks).toString('base64'), type, album:release.title, source:'MusicBrainz / Cover Art Archive', url:'https://musicbrainz.org/' + kind + '/' + id};
   }
   return {reason:'not-found'};
 }
