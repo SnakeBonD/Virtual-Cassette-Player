@@ -229,3 +229,9 @@ Contrôles UI supplémentaires : un extrait dépassant la durée est refusé. L'
 Pas de .vercel ni .openai/hosting.json ; pas de configuration cloud récupérée. Le fichier exemple est livré avec le studio local pour démonstration. Avant de publier, décider si ces médias peuvent être distribués, choisir le projet d'hébergement, l'audience et le stockage. Aucun lancement automatique ni service système n'a été installé.
 
 Dernier contrôle : export LIORA de 15 secondes téléchargé (13,1 Mo), H.264 1080 × 1920, 449 images et audio AAC. Les sommes des durées d'échantillons des fragments sont 14,968 s vidéo / 14,943 s audio. Cadence proche de 30 fps, pas de garantie de 450 images exactes avec MediaRecorder. Annulation corrigée retestée : message « Export annulé. » confirmé. Les détails du conteneur sont dans le rapport export-verification.json livré à côté du projet.
+
+## Recherche de pochettes manquantes
+
+Dans « La piste », « Rechercher toutes les pochettes manquantes » traite la playlist courante, ou le bouton individuel traite la piste sélectionnée. Le tag ALBUM est lu et reste modifiable. Les recherches utilisent ARTIST/TITLE/ALBUM sur MusicBrainz puis les images du Cover Art Archive. Seuls ces textes quittent le navigateur, jamais les audios. Les pochettes présentes sont conservées ; les nouvelles images et leur source sont sauvegardées dans le projet local, sans réécriture des tags du fichier audio.
+
+Les artistes et titres doivent correspondre précisément. Avec ALBUM, seul cet album est accepté. Sans ALBUM, une édition ancienne parmi les correspondances est tentée ; ce n’est pas une garantie de l’édition exacte. Deux éditions sont essayées au maximum. Une absence de résultat ou une indisponibilité est signalée et peut être relancée. La recherche est déclenchée par le bouton, pas automatiquement à l’import.

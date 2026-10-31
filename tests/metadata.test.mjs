@@ -20,3 +20,5 @@ test('ID3v1 artist/title',async()=>{const tag=Buffer.alloc(128);tag.write('TAG')
 test('missing tags explicitly fall back to cleaned filename',async()=>{assert.deepEqual(fallbackNames('1-4. DAFT PUNK — Da funk [320kbps].mp3'),{artist:'DAFT PUNK',title:'Da funk'});const t=await readTrackTags(new Blob(['broken'],{type:'audio/mpeg'}),'01 Unknown.mp3');assert.equal(t.artist,'');assert.equal(t.title,'Unknown');assert.ok(t.warning)});
 
 test('YEAR and recording-date tags are exposed to the sticker',async()=>{assert.equal((await readTrackTags(tagged(3,1,'ABBA','Song','1980'))).year,'1980');assert.equal((await readTrackTags(tagged(4,3,'Artist','Song','1990-04-12'))).year,'1990');assert.equal((await readTrackTags(tagged(3,1,'Artist','Song'))).year,'')});
+
+test('ALBUM is exposed for artwork search',async()=>{const tags=await readTrackTags(new Blob([base],{type:'audio/mpeg'}),'wrong.mp3');assert.equal(tags.album,'Amber Soul');assert.equal((await readTrackTags(new Blob(['bad']),'test.mp3')).album,'')});

@@ -29,3 +29,6 @@ Le stockage est propre au navigateur et à l’origine (localhost et le site pub
 
 Contrôles finaux : saisie de YEAR caractère par caractère (1985), déplacement d’une piste dans les deux sens sans perdre la sélection, annulation d’un export avec déverrouillage des commandes, compilation esbuild et nouvelle exécution des 34 tests réussies.
 
+## Pochettes — 31 octobre 2026
+
+38 tests réussis, dont extraction ALBUM, correspondances artiste/titre/album, refus des homonymes et des identifiants invalides, réponses sans image et validation du type d’image. Recherche réelle Daft Punk / Da Funk / Homework réussie via l’API locale : JPEG et lien d’édition MusicBrainz. Dans le navigateur : lot de pistes synthétiques, absence signalée pour une piste inventée, recherche individuelle réussie, puis recherche groupée réussie sur la dernière pochette absente en conservant les deux pochettes existantes. Après rechargement, album, image et lien source restaurés. Les fichiers audio utilisés restent des signaux de test ; leurs noms et années ont été modifiés pour exercer la recherche, pas pour attester de métadonnées musicales.

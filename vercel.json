@@ -4,7 +4,8 @@
   "buildCommand": "npm run build",
   "outputDirectory": "public",
   "functions": {
-    "api/year.js": {"maxDuration": 30}
+    "api/year.js": {"maxDuration": 30},
+    "api/cover.js": {"maxDuration": 60}
   },
   "headers": [
     {"source": "/(.*)", "headers": [

@@ -58,6 +58,13 @@
 <button id="findYear">Rechercher l’année en ligne</button>
 <p id="yearNote" class="hint">Tag YEAR prioritaire ; sinon recherche par artiste et titre sur MusicBrainz. Aucun audio envoyé.</p>
 <a id="yearSource" target="_blank" rel="noopener" hidden>Source de l’année</a>
+<label>Album (tag ALBUM)<input id="album" type="text" maxlength="180" placeholder="Facultatif · aide à retrouver la bonne édition"></label>
+<button id="findCover">Rechercher la pochette de cette piste</button>
+<button id="findAllCovers">Rechercher toutes les pochettes manquantes</button>
+<p class="hint">Recherche sur MusicBrainz / Cover Art Archive à partir de l’artiste, du titre et de l’album. Aucun fichier audio envoyé. Les pochettes existantes sont conservées.</p>
+<p id="coverNote" class="hint" role="status"></p>
+<a id="coverSource" target="_blank" rel="noopener" hidden>Source de la pochette</a>
+<p id="coverProgress" class="hint" role="status"></p>
 <label>Cover carrée · recadrage centré<input id="coverFile" type="file" accept="image/png,image/jpeg,image/webp">
 </label>
 <label>Corps de cassette<select id="body">
