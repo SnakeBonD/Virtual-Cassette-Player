@@ -6,3 +6,12 @@ test('fades have correct amplitude at boundaries and after seeking',()=>{const p
 test('overlapping fades fit short clips and disabled fades keep unity gain',()=>{assert.deepEqual(fadeEnvelope(2,2,2),[[0,0],[1,1],[2,0]]);assert.equal(envelopeAt(fadeEnvelope(5,0,0),3),1);assert.throws(()=>fadeEnvelope(5,-1,0));assert.throws(()=>fadeEnvelope(5,NaN,0))});
 test('jukebox sequential end, repeat and shuffle cycle without immediate repeats',()=>{assert.equal(nextTrackIndex(3,0),1);assert.equal(nextTrackIndex(3,2),-1);assert.equal(nextTrackIndex(3,2,{repeat:true}),0);assert.equal(nextTrackIndex(3,0,{shuffle:true,history:[0,1]},()=>0),2);assert.equal(nextTrackIndex(3,2,{shuffle:true,history:[0,1,2]}),-1);assert.notEqual(nextTrackIndex(3,2,{shuffle:true,repeat:true,history:[0,1,2]},()=>0),2);assert.equal(nextTrackIndex(1,0,{shuffle:true,repeat:true}),0);assert.equal(nextTrackIndex(0,-1),-1)});
 test('both video quality profiles are portrait 9:16 with distinct bitrates',()=>{for(const q of Object.values(VIDEO_QUALITIES))assert.equal(q.width/q.height,9/16);assert.ok(VIDEO_QUALITIES.high.videoBitsPerSecond>VIDEO_QUALITIES.standard.videoBitsPerSecond)});
+
+
+test('video filename preserves readable metadata and matches the export container',async()=>{
+ const {videoFilename}=await import('../public/studio-settings.js');
+ assert.equal(videoFilename('Philip Oakey & Giorgio Moroder','Together In Electric Dreams','1984'),'Philip Oakey & Giorgio Moroder - Together In Electric Dreams (1984).mp4');
+ assert.equal(videoFilename('Björk','Jóga','','video/webm;codecs=vp9,opus'),'Björk - Jóga.webm');
+ assert.equal(videoFilename('AC/DC','Who: What?','not a year'),'AC DC - Who What.mp4');
+ assert.equal(videoFilename('','',''),'Artiste inconnu - Sans titre.mp4');
+});

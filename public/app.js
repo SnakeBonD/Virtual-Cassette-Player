@@ -6,7 +6,7 @@ import {THEMES,appearance,readAppearance,writeAppearance,coverAccent} from './th
 import {readTrackTags} from './metadata.js';
 import {createSurfaces,retroCassette,trackSurface} from './surfaces.js';
 import {bounds,peaks,rms,time,montageTime} from './audio-utils.js';
-import {parseTimeInput,formatTimeInput,presetRange,fadeEnvelope,envelopeAt,scheduleFades,nextTrackIndex,VIDEO_QUALITIES} from './studio-settings.js';
+import {parseTimeInput,formatTimeInput,presetRange,fadeEnvelope,envelopeAt,scheduleFades,nextTrackIndex,VIDEO_QUALITIES,videoFilename} from './studio-settings.js';
 import {putProject,getProject,allProjects,deleteProject} from './project-store.js';
 const $=id=>document.getElementById(id),canvas=$('canvas'),g=canvas.getContext('2d');
 const status=s=>$('status').textContent=s;
@@ -165,7 +165,7 @@ $('export').onclick=async()=>{
  try{
   const range=readRange();fadeValues();if(!window.MediaRecorder||!canvas.captureStream)throw Error('Export vidéo non pris en charge dans ce navigateur.');
   const mime=['video/mp4;codecs=avc1.42001E,mp4a.40.2','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus'].find(m=>MediaRecorder.isTypeSupported(m));if(!mime)throw Error('Aucun encodeur vidéo compatible.');
-  stopJukebox();$('videoPreview').pause();captureActive();exporting=true;setBusy();await audioContext().resume();const quality=VIDEO_QUALITIES[$('quality').value],title=$('title').value;
+  stopJukebox();$('videoPreview').pause();captureActive();exporting=true;setBusy();await audioContext().resume();const quality=VIDEO_QUALITIES[$('quality').value],filename=videoFilename($('artist').value,$('title').value,$('year').value,mime);
   exportCanvas=document.createElement('canvas');exportCanvas.width=quality.width;exportCanvas.height=quality.height;exportContext=exportCanvas.getContext('2d');offset=range.start;stopAt=range.end;
   // Paint a frame at the selected start before recording, without adding another animation loop.
   await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
@@ -173,7 +173,7 @@ $('export').onclick=async()=>{
   localRecorder=recorder=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:quality.videoBitsPerSecond,audioBitsPerSecond:quality.audioBitsPerSecond});
   localRecorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
   localRecorder.onerror=()=>{cancelled=true;cancelMessage='Échec de l’encodage. Aucun export valide.';halt();if(localRecorder.state!=='inactive')localRecorder.stop()};
-  localRecorder.onstop=()=>{stream.getTracks().forEach(t=>t.stop());unlock();if(cancelled){status(cancelMessage);return}const blob=new Blob(chunks,{type:localRecorder.mimeType});if(!blob.size){status('Export vide. Réessayez dans un navigateur compatible.');return}if(url)URL.revokeObjectURL(url);url=URL.createObjectURL(blob);$('download').href=url;$('download').download=`snakebond-${title.replace(/[^\p{L}\p{N}_-]/gu,'_')}.${mime.startsWith('video/mp4')?'mp4':'webm'}`;$('download').hidden=false;$('videoPreview').src=url;$('videoResult').hidden=false;$('videoInfo').textContent=`${quality.width} × ${quality.height} · ${formatTimeInput(range.end-range.start)} · ${(blob.size/1e6).toFixed(1)} Mo`;status('Vidéo prête. Regardez-la ci-dessous avant de la télécharger.')};
+  localRecorder.onstop=()=>{stream.getTracks().forEach(t=>t.stop());unlock();if(cancelled){status(cancelMessage);return}const blob=new Blob(chunks,{type:localRecorder.mimeType});if(!blob.size){status('Export vide. Réessayez dans un navigateur compatible.');return}if(url)URL.revokeObjectURL(url);url=URL.createObjectURL(blob);$('download').href=url;$('download').download=filename;$('download').hidden=false;$('videoPreview').src=url;$('videoResult').hidden=false;$('videoInfo').textContent=`${quality.width} × ${quality.height} · ${formatTimeInput(range.end-range.start)} · ${(blob.size/1e6).toFixed(1)} Mo`;status('Vidéo prête. Regardez-la ci-dessous avant de la télécharger.')};
   $('cancel').onclick=()=>{cancelled=true;halt();if(localRecorder.state!=='inactive')localRecorder.stop()};
   exporting=true;exportStart=range.start;exportEnd=range.end;setBusy();$('cancel').hidden=false;localRecorder.start(250);await play(range.start,range.end);
  }catch(e){cancelled=true;cancelMessage=e.message;halt();if(localRecorder?.state==='recording')localRecorder.stop();else{stream?.getTracks().forEach(t=>t.stop());unlock()}status(e.message)}

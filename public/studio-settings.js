@@ -1,3 +1,4 @@
+import {validYear} from './year-utils.js';
 export const VIDEO_QUALITIES={standard:{name:'Standard · 720 × 1280',width:720,height:1280,videoBitsPerSecond:4000000,audioBitsPerSecond:128000},high:{name:'Haute · 1080 × 1920',width:1080,height:1920,videoBitsPerSecond:8000000,audioBitsPerSecond:192000}};
 export function parseTimeInput(value){
  const text=String(value).trim().replace(',','.');
@@ -21,4 +22,12 @@ export function nextTrackIndex(count,current,{shuffle=false,repeat=false,history
  if(count<1)return -1;
  if(shuffle){const candidates=Array.from({length:count},(_,i)=>i).filter(i=>i!==current&&!history.includes(i));if(candidates.length)return candidates[Math.min(candidates.length-1,Math.floor(random()*candidates.length))];if(!repeat)return -1;const others=Array.from({length:count},(_,i)=>i).filter(i=>i!==current);return others.length?others[Math.min(others.length-1,Math.floor(random()*others.length))]:current}
  return current+1<count?current+1:repeat?0:-1;
+}
+
+// Keep readable metadata while removing characters forbidden in Windows filenames.
+export function videoFilename(artist,title,year,mime='video/mp4'){
+ const clean=value=>String(value||'').replace(/[<>:"/\\|?*\x00-\x1f\x7f]/g,' ').replace(/\s+/g,' ').trim().replace(/[. ]+$/g,'');
+ const a=clean(artist)||'Artiste inconnu',t=clean(title)||'Sans titre',y=validYear(year);
+ const stem=Array.from(`${a} - ${t}`).slice(0,180).join('').replace(/[. ]+$/g,'');
+ return `${stem}${y?' ('+y+')':''}.${mime.startsWith('video/mp4')?'mp4':'webm'}`;
 }
